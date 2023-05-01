@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import SurveyList from "./SurveyList";
 import Survey from "./Survey";
 import NewSurvey from "./NewSurvey";
 
@@ -14,6 +15,11 @@ function SurveyControl() {
 
   const handleAddingNewSurveyToList = (newSurvey) => {
     const newMainSurveyList = mainSurveyList.concat(newSurvey);
+    console.log(newSurvey)
+    console.log(newMainSurveyList)
+    setMainSurveyList(newMainSurveyList);
+
+    setFormVisibleOnPage(false);
   };
 
   let currentlyVisibleState = null;
@@ -21,11 +27,11 @@ function SurveyControl() {
 
   if (formVisibleOnPage) {
     currentlyVisibleState =
-      <newSurvey
+      <NewSurvey
         onNewSurveyCreation={handleAddingNewSurveyToList} />;
     buttonText = "Return to list";
   } else {
-    currentlyVisibleState = <surveyList
+    currentlyVisibleState = <SurveyList
       surveyList={mainSurveyList} />;
     buttonText = "New Survey";
   }
