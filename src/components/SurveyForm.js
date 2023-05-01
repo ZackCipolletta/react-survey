@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 function SurveyForm(props) {
 
-  const { } = props;
+  // const { } = props;
 
   return (
     < React.Fragment >
@@ -12,27 +12,15 @@ function SurveyForm(props) {
           type='text'
           name="title"
           placeholder="Title of Survey" /> <br />
-        Question 1: <input
-          type='text'
-          name="Question1"
-          placeholder="First Question" />
-        value: <br />
-        Question Answer 1: <input
-          type='text'
-          name="Question1Answer1"
-          placeholder="First Answer" /><br />
-        Question Answer 2: <input
-          type='text'
-          name="Question1Answer2"
-          placeholder="Second Answer" /><br />
-        Question Answer 3: <input
-          type='text'
-          name="Question1Answer3"
-          placeholder="Third Answer" /><br />
-        Question Answer 4: <input
-          type='text'
-          name="Question1Answer4"
-          placeholder="Fourth Answer" />
+        Question: <input type='text'
+          name="question"
+          placeholder="Type your question here" /> <br />
+        Answer: <input type='text'
+          name="answer"
+          placeholder="Type your answer here" /> <br /><br />
+        <button onClick={props.addQuestion}>submit</button>
+        <br /><br />
+        <br /><br />
         <button type='submit'>{props.buttonText}</button>
       </form>
     </React.Fragment >

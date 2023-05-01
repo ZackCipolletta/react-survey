@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SurveyForm from "./SurveyForm";
-import { v4 } from 'uuid';
 
 function NewSurvey(props) {
 
@@ -9,13 +8,10 @@ function NewSurvey(props) {
     event.preventDefault();
     props.onNewSurveyCreation({
       title: event.target.title.value,
-      Question1: event.target.title.value,
-      Question1Answer1: event.target.Question1Answer1.value,
-      Question1Answer2: event.target.Question1Answer2.value,
-      Question1Answer3: event.target.Question1Answer3.value,
-      Question1Answer4: event.target.Question1Answer4.value,
-      id: v4()
+      Question: event.target.question.value,
+      Answer: event.target.answer.value
     });
+    
   }
 
   return (
