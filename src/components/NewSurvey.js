@@ -8,18 +8,24 @@ function NewSurvey(props) {
     event.preventDefault();
     props.onNewSurveyCreation({
       title: event.target.title.value,
-      Question: event.target.question.value,
-      Answer: event.target.answer.value
+      question1: event.target.question1.value,
+      question2: event.target.question2.value,
+      question3: event.target.question3.value,
+      question4: event.target.question4.value,
+      question5: event.target.question5.value,
+      question6: event.target.question6.value,
+      question7: event.target.question7.value,
+      question8: event.target.question8.value
     });
-    
   }
 
   return (
-    <React.Fragment>
+    < React.Fragment >
       <SurveyForm
         formSubmissionHandler={handleNewSurveyFormSubmission}
-        buttonText="Submit" />
-    </React.Fragment>
+        buttonText="Submit"
+      />
+    </React.Fragment >
   );
 }
 

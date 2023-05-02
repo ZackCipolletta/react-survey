@@ -7,8 +7,8 @@ function SurveyList(props) {
     <React.Fragment>
       {Object.values(props.surveyList).map((survey) =>
         <Survey
+          whenSurveyClicked={props.onSurveySelection}
           title={survey.title}
-          Question1={survey.Question1}
           id={survey.id}
           key={survey.id}
         />
@@ -18,7 +18,8 @@ function SurveyList(props) {
 }
 
 SurveyList.propTypes = {
-  SurveyList: PropTypes.array
+  SurveyList: PropTypes.array,
+  onSurveySelection: PropTypes.func
 };
 
 export default SurveyList;
