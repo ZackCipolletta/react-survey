@@ -10,7 +10,7 @@ function NewSurvey(props) {
   function handleNewSurveyFormSubmission(event) {
     event.preventDefault();
     props.onNewSurveyCreation({
-      currentUserEmail: props.currentUserEmail,
+      creatorEmail: props.currentUserEmail,
       title: event.target.title.value,
       question1: event.target.question1.value,
       question2: event.target.question2.value,

@@ -23,7 +23,7 @@ function SurveyControl( props ) {
         const surveys = [];
         collectionSnapshot.forEach((doc) => {
           surveys.push({
-            currentUserEmail: doc.data().userEmail,
+            creatorEmail: doc.data().creatorEmail,
             title: doc.data().title,
             question1: doc.data().question1,
             question2: doc.data().question2,
@@ -119,13 +119,13 @@ function SurveyControl( props ) {
   } else if (selectedSurvey != null) {
     currentlyVisibleState =
       <SurveyDetail
-        survey={selectedSurvey}
+      survey={selectedSurvey}
+      // currentUserEmail={props.userEmail}
         onClickingSend={handleSendingSurvey}
         onClickingEdit={handleEditClick}
         onClickingDelete={handleDeleteSurvey} />;
     buttonText = "Return to list";
   } else if (formVisibleOnPage) {
-    console.log(props)
     currentlyVisibleState =
       <NewSurvey
       onNewSurveyCreation={handleAddingNewSurveyToList}

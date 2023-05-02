@@ -23,6 +23,7 @@ function SurveyDetail(props) {
   return (
     <React.Fragment>
       <form onSubmit={handleAnswerSubmission}>
+        <h1>this is the creator: {survey.creatorEmail}</h1>
         <h1>{survey.title}</h1><br />
         <h3>{survey.question1}</h3><br />
         Answer: <input type='text'
@@ -58,6 +59,7 @@ function SurveyDetail(props) {
           placeholder="Type your answer here" /> <br /><br />
         <button type="submit">Submit Survey Answers</button>
       </form>
+      
       <button onClick={props.onClickingEdit}>Update Survey</button>
       <button onClick={() => onClickingDelete(survey.id)}>Delete Survey</button>
 
