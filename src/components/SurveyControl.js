@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import db from "../firebase";
+import { db, auth } from "../firebase";
 import SurveyList from "./SurveyList";
 // import Survey from "./Survey";
 import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc } from "firebase/firestore";
@@ -7,7 +7,7 @@ import NewSurvey from "./NewSurvey";
 import EditSurveyForm from "./EditSurvey";
 import SurveyDetail from "./SurveyDetail";
 
-function SurveyControl() {
+function SurveyControl( props ) {
 
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
   const [mainSurveyList, setMainSurveyList] = useState([]);
@@ -23,6 +23,7 @@ function SurveyControl() {
         const surveys = [];
         collectionSnapshot.forEach((doc) => {
           surveys.push({
+            currentUserEmail: doc.data().userEmail,
             title: doc.data().title,
             question1: doc.data().question1,
             question2: doc.data().question2,
@@ -124,9 +125,11 @@ function SurveyControl() {
         onClickingDelete={handleDeleteSurvey} />;
     buttonText = "Return to list";
   } else if (formVisibleOnPage) {
+    console.log(props)
     currentlyVisibleState =
       <NewSurvey
-        onNewSurveyCreation={handleAddingNewSurveyToList} />;
+      onNewSurveyCreation={handleAddingNewSurveyToList}
+      currentUserEmail={props.userEmail}/>;
     buttonText = "Return to list";
   } else {
     currentlyVisibleState = <SurveyList

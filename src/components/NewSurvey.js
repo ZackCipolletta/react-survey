@@ -1,12 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SurveyForm from "./SurveyForm";
+import { auth } from "./../firebase.js";
 
 function NewSurvey(props) {
+
+  console.log(props);
 
   function handleNewSurveyFormSubmission(event) {
     event.preventDefault();
     props.onNewSurveyCreation({
+      currentUserEmail: props.currentUserEmail,
       title: event.target.title.value,
       question1: event.target.question1.value,
       question2: event.target.question2.value,
