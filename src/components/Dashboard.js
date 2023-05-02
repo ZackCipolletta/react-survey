@@ -2,11 +2,13 @@ import React from "react";
 import Survey from "./Survey";
 import PropTypes from "prop-types";
 
-function SurveyList(props) {
+function DashBoard(props) {
+
+  const filteredSurveys = props.mainList.filter(survey => survey.creatorEmail === props.currentUserEmail)
+
   return (
     <React.Fragment>
-      <button onClick={props.onDashboardClick}>Dashboard</button>
-      {props.surveyList.map((survey) =>
+      {filteredSurveys.map((survey) =>
         <Survey
           whenSurveyClicked={props.onSurveySelection}
           title={survey.title}
@@ -18,10 +20,9 @@ function SurveyList(props) {
   );
 }
 
-SurveyList.propTypes = {
+DashBoard.propTypes = {
   SurveyList: PropTypes.array,
-  onSurveySelection: PropTypes.func,
-  onDashboardClick: PropTypes.func
+  onSurveySelection: PropTypes.func
 };
 
-export default SurveyList;
+export default DashBoard;

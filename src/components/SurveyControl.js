@@ -6,6 +6,7 @@ import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc } from "fireb
 import NewSurvey from "./NewSurvey";
 import EditSurveyForm from "./EditSurvey";
 import SurveyDetail from "./SurveyDetail";
+import DashBoard from "./Dashboard";
 
 function SurveyControl( props ) {
 
@@ -15,6 +16,7 @@ function SurveyControl( props ) {
   const [newSurvey, setNewSurvey] = useState(false);
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [dashboardDisplay, setDashboardDisplay] = useState(false);
 
   useEffect(() => {
     const unSubscribe = onSnapshot(
@@ -60,20 +62,9 @@ function SurveyControl( props ) {
     console.log("setting edit to true");
   };
 
-  // const createSurvey = async () => {
-  //   await addDoc(collection(db, "surveys"));
-  //   setFormVisibleOnPage(false);
-  // };
-
-  //add functionality of createSurvey, handleAddingNewSurvey, and selected survey to make new function that allows us to alter the data for specified survey in the db
-  // const addQuestionToSurvey = async (newQuestion) => {
-  //   const result = await addDoc(collection(db, "surveys"), newQuestion);
-  //   const id = result._key.path.segments[1];
-  //   const selected = doc(db, "surveys", id);
-  //   setSelectedSurvey(selected);
-  //   console.log(selected);
-  //   setEditing(true);
-  // };
+  const handleDashboardClick = () => {
+    setDashboardDisplay(true)
+  }
 
   const handleEditingSurveyInList = async (surveyToEdit) => {
     const surveyRef = doc(db, "surveys", surveyToEdit.id);
@@ -94,7 +85,6 @@ function SurveyControl( props ) {
 
   const handleChangingSelectedSurvey = (id) => {
     const selection = mainSurveyList.filter(survey => survey.id === id)[0];
-    console.log(selection);
     setSelectedSurvey(selection);
   };
 
@@ -120,7 +110,7 @@ function SurveyControl( props ) {
     currentlyVisibleState =
       <SurveyDetail
       survey={selectedSurvey}
-      // currentUserEmail={props.userEmail}
+      currentUserEmail={props.userEmail}
         onClickingSend={handleSendingSurvey}
         onClickingEdit={handleEditClick}
         onClickingDelete={handleDeleteSurvey} />;
@@ -131,10 +121,19 @@ function SurveyControl( props ) {
       onNewSurveyCreation={handleAddingNewSurveyToList}
       currentUserEmail={props.userEmail}/>;
     buttonText = "Return to list";
+  } else if (dashboardDisplay) {
+    currentlyVisibleState = 
+      <DashBoard
+      currentUserEmail={props.userEmail}
+      mainList={mainSurveyList}
+      onSurveySelection={handleChangingSelectedSurvey}
+    />
+    buttonText = "Return to list";
   } else {
     currentlyVisibleState = <SurveyList
       onSurveySelection={handleChangingSelectedSurvey}
       surveyList={mainSurveyList}
+      onDashboardClick={handleDashboardClick}
     // addQuestion={addQuestionToSurvey}
     />;
     buttonText = "New Survey";
@@ -142,7 +141,7 @@ function SurveyControl( props ) {
   return (
     <React.Fragment>
       {currentlyVisibleState}
-      <button onClick={handleClick}>{buttonText}</button>
+      {props.userEmail ? <button onClick={handleClick}>{buttonText}</button> : null }
     </React.Fragment>
   );
 }

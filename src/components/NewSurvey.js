@@ -5,7 +5,6 @@ import { auth } from "./../firebase.js";
 
 function NewSurvey(props) {
 
-  console.log(props);
 
   function handleNewSurveyFormSubmission(event) {
     event.preventDefault();

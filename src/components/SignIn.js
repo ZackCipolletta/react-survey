@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 
 function SignIn(props) {
 
-    const { onSignIn } = props;
+  const { onSignIn } = props;
 
   const [signUpSuccess, setSignUpSuccess] = useState(null);
   const [signInSuccess, setSignInSuccess] = useState(null);
@@ -30,7 +30,7 @@ function SignIn(props) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setSignInSuccess(`You've successfully signed in as ${userCredential.user.email}!`);
-        onSignIn(userCredential.user.email)
+        onSignIn(userCredential.user.email);
       })
       .catch((error) => {
         setSignInSuccess(`There was an error signing in: ${error.message}!`);
@@ -41,6 +41,7 @@ function SignIn(props) {
     signOut(auth)
       .then(function () {
         setSignOutSuccess(`You have successfully signed out!`);
+        onSignIn(null)
       }).catch(function (error) {
         setSignOutSuccess(`There was an error signing out: ${error.message}!`);
       });
@@ -74,12 +75,12 @@ function SignIn(props) {
           name="signinPassword"
           placeholder="Password" />
         <button type="submit">Sign in</button>
-
-        <h1>Sing Out</h1>
-        {signOutSuccess}
-        <br />
-        <button onClick={doSignOut}>Sign out</button>
       </form>
+      <h1>Sign Out</h1>
+      {signOutSuccess}
+      <br />
+      <button onClick={doSignOut}>Sign out</button>
+
 
     </React.Fragment>
   );

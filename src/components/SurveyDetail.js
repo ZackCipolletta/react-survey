@@ -59,9 +59,9 @@ function SurveyDetail(props) {
           placeholder="Type your answer here" /> <br /><br />
         <button type="submit">Submit Survey Answers</button>
       </form>
-      
-      <button onClick={props.onClickingEdit}>Update Survey</button>
-      <button onClick={() => onClickingDelete(survey.id)}>Delete Survey</button>
+
+      {survey.creatorEmail !== props.currentUserEmail ? null : <button onClick={props.onClickingEdit}>Update Survey</button>}
+      {survey.creatorEmail !== props.currentUserEmail ? null : <button onClick={() => onClickingDelete(survey.id)}>Delete Survey</button>}
 
     </React.Fragment>
   );
