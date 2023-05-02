@@ -44,14 +44,19 @@ function SurveyControl() {
     return () => unSubscribe();
   }, []);
 
-
   const handleClick = () => {
     if (selectedSurvey != null) {
       setSelectedSurvey(null);
       setFormVisibleOnPage(false);
+      setEditing(false);
     } else {
       setFormVisibleOnPage(!formVisibleOnPage);
     }
+  };
+
+  const handleEditClick = () => {
+    setEditing(true);
+    console.log("setting edit to true");
   };
 
   // const createSurvey = async () => {
@@ -73,6 +78,11 @@ function SurveyControl() {
     const surveyRef = doc(db, "surveys", surveyToEdit.id);
     await updateDoc(surveyRef, surveyToEdit);
     setEditing(false);
+    setSelectedSurvey(null);
+  };
+
+  const handleDeleteSurvey = async (id) => {
+    await deleteDoc(doc(db, "surveys", id));
     setSelectedSurvey(null);
   };
 
@@ -101,12 +111,17 @@ function SurveyControl() {
     currentlyVisibleState =
       <EditSurveyForm
         survey={selectedSurvey}
-        onEditSurvey={handleEditingSurveyInList} />;
+        onEditSurvey={handleEditingSurveyInList}
+
+      />;
+    buttonText = "Return to list";
   } else if (selectedSurvey != null) {
     currentlyVisibleState =
       <SurveyDetail
         survey={selectedSurvey}
-        onClickingSend={handleSendingSurvey} />;
+        onClickingSend={handleSendingSurvey}
+        onClickingEdit={handleEditClick}
+        onClickingDelete={handleDeleteSurvey} />;
     buttonText = "Return to list";
   } else if (formVisibleOnPage) {
     currentlyVisibleState =

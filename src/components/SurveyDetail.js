@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function SurveyDetail(props) {
-  const { survey } = props;
+  const { survey, onClickingDelete } = props;
 
   function handleAnswerSubmission(event) {
     event.preventDefault();
@@ -58,13 +58,18 @@ function SurveyDetail(props) {
           placeholder="Type your answer here" /> <br /><br />
         <button type="submit">Submit Survey Answers</button>
       </form>
+      <button onClick={props.onClickingEdit}>Update Survey</button>
+      <button onClick={() => onClickingDelete(survey.id)}>Delete Survey</button>
+
     </React.Fragment>
   );
 }
 
 SurveyDetail.propTypes = {
   survey: PropTypes.object,
-  onClickingSend: PropTypes.func
+  onClickingSend: PropTypes.func,
+  onClickingEdit: PropTypes.func,
+  onClickingDelete: PropTypes.func
 };
 
 export default SurveyDetail;
