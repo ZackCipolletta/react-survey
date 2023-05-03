@@ -48,29 +48,6 @@ function SurveyControl(props) {
     return () => unSubscribe();
   }, []);
 
-
-  // useEffect(() => {
-  //   const unSubscribe = onSnapshot(
-  //     collection(db, "answers"),
-  //     (collectionSnapshot) => {
-  //       const answers = [];
-  //       collectionSnapshot.forEach((doc) => {
-  //         answers.push({
-  //           answer1: doc.data().answer1,
-  //           surveyId: doc.data().surveyId
-  //         });
-  //       });
-
-
-  //       const answersArray = Object.keys(q).map(key => q[key]);
-  //       setAnswersList(answersArray);
-  //       console.log(answersList);
-  //     }
-  //   );
-  //   return () => unSubscribe();
-  // }, [selectedSurvey]);
-
-
   useEffect(() => {
     if (!selectedSurvey) return;
 
@@ -91,8 +68,6 @@ function SurveyControl(props) {
     };
   }, [selectedSurvey]);
   
-
-
   const handleClick = () => {
     if (selectedSurvey != null) {
       setSelectedSurvey(null);
