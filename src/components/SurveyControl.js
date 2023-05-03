@@ -2,13 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import { db, auth } from "../firebase";
 import SurveyList from "./SurveyList";
 // import Survey from "./Survey";
-import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc, query, where, getDocs } from "firebase/firestore";
 import NewSurvey from "./NewSurvey";
 import EditSurveyForm from "./EditSurvey";
 import SurveyDetail from "./SurveyDetail";
 import DashBoard from "./Dashboard";
 
-function SurveyControl( props ) {
+function SurveyControl(props) {
 
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
   const [mainSurveyList, setMainSurveyList] = useState([]);
@@ -17,6 +17,7 @@ function SurveyControl( props ) {
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [editing, setEditing] = useState(false);
   const [dashboardDisplay, setDashboardDisplay] = useState(false);
+  const [answersList, setAnswersList] = useState([]);
 
   useEffect(() => {
     const unSubscribe = onSnapshot(
@@ -47,6 +48,51 @@ function SurveyControl( props ) {
     return () => unSubscribe();
   }, []);
 
+
+  // useEffect(() => {
+  //   const unSubscribe = onSnapshot(
+  //     collection(db, "answers"),
+  //     (collectionSnapshot) => {
+  //       const answers = [];
+  //       collectionSnapshot.forEach((doc) => {
+  //         answers.push({
+  //           answer1: doc.data().answer1,
+  //           surveyId: doc.data().surveyId
+  //         });
+  //       });
+
+
+  //       const answersArray = Object.keys(q).map(key => q[key]);
+  //       setAnswersList(answersArray);
+  //       console.log(answersList);
+  //     }
+  //   );
+  //   return () => unSubscribe();
+  // }, [selectedSurvey]);
+
+
+  useEffect(() => {
+    if (!selectedSurvey) return;
+
+    const selectedId = selectedSurvey.id;
+    const q = query(collection(db, "answers"), where("surveyId", "==", selectedId));
+  
+    const unSubscribe = onSnapshot(q, (querySnapshot) => {
+      const answers = [];
+      querySnapshot.forEach((doc) => {
+        answers.push({ id: doc.id, ...doc.data() });
+      });
+      console.log(answers);
+      setAnswersList(answers);
+    });
+  
+    return () => {
+      if (unSubscribe) unSubscribe();
+    };
+  }, [selectedSurvey]);
+  
+
+
   const handleClick = () => {
     if (selectedSurvey != null) {
       setSelectedSurvey(null);
@@ -63,8 +109,8 @@ function SurveyControl( props ) {
   };
 
   const handleDashboardClick = () => {
-    setDashboardDisplay(true)
-  }
+    setDashboardDisplay(true);
+  };
 
   const handleEditingSurveyInList = async (surveyToEdit) => {
     const surveyRef = doc(db, "surveys", surveyToEdit.id);
@@ -109,8 +155,9 @@ function SurveyControl( props ) {
   } else if (selectedSurvey != null) {
     currentlyVisibleState =
       <SurveyDetail
-      survey={selectedSurvey}
-      currentUserEmail={props.userEmail}
+        survey={selectedSurvey}
+        surveyAnswers={answersList}
+        currentUserEmail={props.userEmail}
         onClickingSend={handleSendingSurvey}
         onClickingEdit={handleEditClick}
         onClickingDelete={handleDeleteSurvey} />;
@@ -118,16 +165,16 @@ function SurveyControl( props ) {
   } else if (formVisibleOnPage) {
     currentlyVisibleState =
       <NewSurvey
-      onNewSurveyCreation={handleAddingNewSurveyToList}
-      currentUserEmail={props.userEmail}/>;
+        onNewSurveyCreation={handleAddingNewSurveyToList}
+        currentUserEmail={props.userEmail} />;
     buttonText = "Return to list";
   } else if (dashboardDisplay) {
-    currentlyVisibleState = 
+    currentlyVisibleState =
       <DashBoard
-      currentUserEmail={props.userEmail}
-      mainList={mainSurveyList}
-      onSurveySelection={handleChangingSelectedSurvey}
-    />
+        currentUserEmail={props.userEmail}
+        mainList={mainSurveyList}
+        onSurveySelection={handleChangingSelectedSurvey}
+      />;
     buttonText = "Return to list";
   } else {
     currentlyVisibleState = <SurveyList
@@ -141,7 +188,7 @@ function SurveyControl( props ) {
   return (
     <React.Fragment>
       {currentlyVisibleState}
-      {props.userEmail ? <button onClick={handleClick}>{buttonText}</button> : null }
+      {props.userEmail ? <button onClick={handleClick}>{buttonText}</button> : null}
     </React.Fragment>
   );
 }

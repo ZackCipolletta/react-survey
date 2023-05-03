@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function SurveyDetail(props) {
-  const { survey, onClickingDelete } = props;
+  const { survey, onClickingDelete, onClickingSend, surveyAnswers } = props;
 
   function handleAnswerSubmission(event) {
     event.preventDefault();
-    props.onClickingSend({
+    onClickingSend({
       // userId: user.id | null
       answer1: event.target.answer1.value,
       answer2: event.target.answer2.value,
@@ -62,6 +62,21 @@ function SurveyDetail(props) {
 
       {survey.creatorEmail !== props.currentUserEmail ? null : <button onClick={props.onClickingEdit}>Update Survey</button>}
       {survey.creatorEmail !== props.currentUserEmail ? null : <button onClick={() => onClickingDelete(survey.id)}>Delete Survey</button>}
+
+      {survey.creatorEmail !== props.currentUserEmail ? null :
+        surveyAnswers.map((answer) =>
+          <div key={answer.id}>
+            <p>answer1: {answer.answer1}</p>
+            <p>answer 2: {answer.answer2}</p>
+            <p>answer 3: {answer.answer3}</p>
+            <p>answer 4: {answer.answer4}</p>
+            <p>answer 5: {answer.answer5}</p>
+            <p>answer 6: {answer.answer6}</p>
+            <p>answer 7: {answer.answer7}</p>
+            <p>answer 8: {answer.answer8}</p>
+          </div>
+        )
+      }
 
     </React.Fragment>
   );
