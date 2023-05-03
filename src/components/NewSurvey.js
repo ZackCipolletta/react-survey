@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SurveyForm from "./SurveyForm";
-import { auth } from "./../firebase.js";
 
 function NewSurvey(props) {
 

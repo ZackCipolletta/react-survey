@@ -1,23 +1,25 @@
 import React, { useContext, useState, useEffect } from "react";
 import { db, auth } from "../firebase";
 import SurveyList from "./SurveyList";
-// import Survey from "./Survey";
-import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc, query, where, getDocs } from "firebase/firestore";
+import NewVariableSurvey from "./NewVariableSurvey";
+import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc, query, where, getDocs, getDoc, getFirestore } from "firebase/firestore";
 import NewSurvey from "./NewSurvey";
 import EditSurveyForm from "./EditSurvey";
 import SurveyDetail from "./SurveyDetail";
 import DashBoard from "./Dashboard";
+import VariableDetail from "./VariableDetail";
 
 function SurveyControl(props) {
 
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
   const [mainSurveyList, setMainSurveyList] = useState([]);
   const [error, setError] = useState(null);
-  const [newSurvey, setNewSurvey] = useState(false);
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [editing, setEditing] = useState(false);
   const [dashboardDisplay, setDashboardDisplay] = useState(false);
   const [answersList, setAnswersList] = useState([]);
+  const [questionsList, setQuestionsList] = useState([]);
+  const [variableForm, setVariableForm] = useState(false);
 
   useEffect(() => {
     const unSubscribe = onSnapshot(
@@ -28,14 +30,7 @@ function SurveyControl(props) {
           surveys.push({
             creatorEmail: doc.data().creatorEmail,
             title: doc.data().title,
-            question1: doc.data().question1,
-            question2: doc.data().question2,
-            question3: doc.data().question3,
-            question4: doc.data().question4,
-            question5: doc.data().question5,
-            question6: doc.data().question6,
-            question7: doc.data().question7,
-            question8: doc.data().question8,
+            questions: doc.data().questions,
             id: doc.id
           });
         });
@@ -53,21 +48,61 @@ function SurveyControl(props) {
 
     const selectedId = selectedSurvey.id;
     const q = query(collection(db, "answers"), where("surveyId", "==", selectedId));
-  
+
     const unSubscribe = onSnapshot(q, (querySnapshot) => {
       const answers = [];
       querySnapshot.forEach((doc) => {
         answers.push({ id: doc.id, ...doc.data() });
       });
-      console.log(answers);
       setAnswersList(answers);
     });
-  
+
     return () => {
       if (unSubscribe) unSubscribe();
     };
   }, [selectedSurvey]);
-  
+  // -------------------------------------------------------------------------------------------------------
+  // useEffect(() => {
+  //   if (!selectedSurvey) return;
+  //   let unSubscribe;
+
+  //   (async () => {
+  //     const selectedId = selectedSurvey.id;
+  //     const db = getFirestore();
+  //     const docRef = doc(db, "surveys", selectedId);
+
+  //     try {
+  //       const docSnap = await getDoc(docRef);
+  //       console.log(docSnap.data().questions);
+  //       setQuestionsList(docSnap.data().questions)
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+
+  //   return () => {
+  //     if (unSubscribe) unSubscribe();
+  //   };
+  // }, [selectedSurvey]);
+
+  const updateQuestionList = (id) => {
+    
+      (async () => {
+        const db = getFirestore();
+        const docRef = doc(db, "surveys", id);
+
+        try {
+          const docSnap = await getDoc(docRef);
+          console.log(docSnap.data().questions);
+          setQuestionsList(docSnap.data().questions);
+        } catch (error) {
+          console.log(error);
+        }
+        console.log("Reached updated questionList")
+      })();
+  };
+
+
   const handleClick = () => {
     if (selectedSurvey != null) {
       setSelectedSurvey(null);
@@ -107,6 +142,7 @@ function SurveyControl(props) {
   const handleChangingSelectedSurvey = (id) => {
     const selection = mainSurveyList.filter(survey => survey.id === id)[0];
     setSelectedSurvey(selection);
+    updateQuestionList(id);
   };
 
   const handleSendingSurvey = async (surveyAnswers) => {
@@ -124,14 +160,15 @@ function SurveyControl(props) {
       <EditSurveyForm
         survey={selectedSurvey}
         onEditSurvey={handleEditingSurveyInList}
-
       />;
     buttonText = "Return to list";
-  } else if (selectedSurvey != null) {
+  } else if (selectedSurvey != null && questionsList) {
+    console.log(questionsList);
     currentlyVisibleState =
-      <SurveyDetail
+      <VariableDetail
         survey={selectedSurvey}
         surveyAnswers={answersList}
+        currentQuestions={questionsList}
         currentUserEmail={props.userEmail}
         onClickingSend={handleSendingSurvey}
         onClickingEdit={handleEditClick}
@@ -143,6 +180,12 @@ function SurveyControl(props) {
         onNewSurveyCreation={handleAddingNewSurveyToList}
         currentUserEmail={props.userEmail} />;
     buttonText = "Return to list";
+  } else if (variableForm) {
+    currentlyVisibleState =
+      <NewVariableSurvey
+        onNewSurveyCreation={handleAddingNewSurveyToList}
+        currentUserEmail={props.userEmail}
+      />;
   } else if (dashboardDisplay) {
     currentlyVisibleState =
       <DashBoard
