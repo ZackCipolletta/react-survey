@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import VariableQForm from "./VariableQForm";
 
 function VariableDetail(props) {
+  const { survey, onClickingDelete, onClickingSend, surveyAnswers } = props;
   const [answers, setAnswers] = useState({});
 
   function handleAnswerChange(event, index) {
@@ -39,10 +40,15 @@ function VariableDetail(props) {
 
   return (
     <React.Fragment>
+      <h1>{survey.title}</h1>
       <form onSubmit={handleAnswerSubmission}>
         {questionInputs}
         <button type="submit">Submit</button>
       </form>
+
+      {survey.creatorEmail !== survey.currentUserEmail ? null : <button onClick={survey.onClickingEdit}>Update Survey</button>}
+      {survey.creatorEmail !== survey.currentUserEmail ? null : <button onClick={() => onClickingDelete(survey.id)}>Delete Survey</button>}
+
     </React.Fragment>
   );
 }
